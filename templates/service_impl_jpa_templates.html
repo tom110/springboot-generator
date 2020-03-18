@@ -1,0 +1,81 @@
+package {{ impl_package }};
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import {{ package }}.entity.{{ class_name }};
+import {{ package }}.repository.{{ class_name }}Repository;
+import {{ package }}.service.{{ class_name }}Service;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * @author {{ author }}
+ * @version {{ version }}
+ * @date {{ date }}
+ * @powered by Tom Brain
+ */
+@Service
+public class {{ class_name }}ServiceImpl implements {{ class_name }}Service {
+
+    @Autowired
+    private {{ class_name }}Repository {{ class_name_lower }}Repository;
+
+    @Override
+    public List<{{ class_name }}> listAll() {
+        return {{ class_name_lower }}Repository.findAll();
+    }
+
+    @Override
+    public {{ class_name }} getById({{ id_type }} id) {
+        if(id==null)
+            return null;
+        Optional<{{ class_name }}> {{ class_name_lower }}= {{ class_name_lower }}Repository.findById(id);
+        if({{ class_name_lower }}.isPresent()){
+            return {{ class_name_lower }}.get();
+        }else{
+            return null;
+        }
+    }
+
+    @Override
+    public {{ class_name }} save({{ class_name }} entity) throws Exception{
+        {{ class_name }} {{ class_name_lower }}= getById(entity.getId());
+        if ({{ class_name_lower }}==null) {
+            {{ class_name_lower }}=saveOrUpdate(entity);
+        }
+        else{
+            throw new Exception("Entity is already exist");
+        }
+        return {{ class_name_lower }};
+    }
+
+    @Override
+    public {{ class_name }} update({{ class_name }} entity) throws Exception{
+        {{ class_name }} {{ class_name_lower }}= getById(entity.getId());
+        if ({{ class_name_lower }}==null) {
+            throw new Exception("Entity is not exist");
+        }
+        else{
+            {{ class_name_lower }}=saveOrUpdate(entity);
+        }
+        return {{ class_name_lower }};
+    }
+
+    @Override
+    public {{ class_name }} saveOrUpdate({{ class_name }} domainObject) {
+        return {{ class_name_lower }}Repository.save(domainObject);
+    }
+
+    @Override
+    public void delete({{ id_type }} id) {
+        {{ class_name_lower }}Repository.deleteById(id);
+    }
+
+    @Override
+    public Page<{{ class_name }}> page(Pageable pageable) {
+        return {{ class_name_lower }}Repository.findAll(pageable);
+    }
+}

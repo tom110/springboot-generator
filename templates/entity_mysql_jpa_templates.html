@@ -1,0 +1,25 @@
+package {{ package }};
+
+import javax.persistence.*;
+import java.util.Date;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * @author {{ author }}
+ * @version {{ version }}
+ * @date {{ date }}
+ * @powered by Tom Brain
+ */
+@Api(description = "{{ table_comment }}")
+@Entity
+@Table(name = "{{ table_name }}")
+public class {{ class_name }} {
+{{ propertys | safe }}
+
+    //外键位置
+
+{{ methods|safe}}
+}

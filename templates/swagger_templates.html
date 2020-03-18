@@ -1,0 +1,76 @@
+package {{ package }}.configuration;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+{% if params.files %}
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.gridfs.GridFSBucket;
+import com.mongodb.client.gridfs.GridFSBuckets;
+import org.springframework.data.mongodb.MongoDbFactory;
+{% endif %}
+import org.springframework.beans.factory.annotation.Autowired;
+
+@Configuration
+@EnableSwagger2
+public class SwaggerConfiguration {
+    @Bean
+    public Docket createRestApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("{{ package }}"))
+                .paths(PathSelectors.any())
+                .build();
+    }
+
+    private ApiInfo apiInfo() {
+        return new ApiInfoBuilder()
+                .title("{{ swa_name }}API文档")
+                .contact(new Contact("{{ pro_author }}", "{{ swa_powerby }}", "{{ swa_email }}"))
+                .version("{{ swa_version }}")
+                .build();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            //重写父类提供的跨域请求处理的接口
+            public void addCorsMappings(CorsRegistry registry) {
+                //添加映射路径
+                registry.addMapping("/**")
+                        //放行哪些原始域
+                        .allowedOrigins("*")
+                        //是否发送Cookie信息
+                        .allowCredentials(true)
+                        //放行哪些原始域(请求方式)
+                        .allowedMethods("GET","POST", "PUT", "DELETE")
+                        //放行哪些原始域(头部信息)
+                        .allowedHeaders("*")
+                        //暴露哪些头部信息（因为跨域访问默认不能获取全部头部信息）
+                        .exposedHeaders("Header1", "Header2");
+            }
+        };
+    }
+
+    {% if params.files %}
+	@Autowired
+	private MongoDbFactory mongoDbFactory;
+
+	@Bean
+	public GridFSBucket getGridFSBuckets() {
+		MongoDatabase db = mongoDbFactory.getDb();
+		return GridFSBuckets.create(db);
+	}
+    {% endif %}
+}

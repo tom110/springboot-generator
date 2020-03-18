@@ -1,0 +1,9 @@
+FROM {{ iniParser.dep_dockerjdk }}
+
+VOLUME {{ iniParser.dep_dockervol }}
+ADD {{ iniParser.pro_arti }}-{{ iniParser.pro_pversion }}.jar app.jar
+RUN sh -c 'touch /app.jar'
+#EXPOSE 8761
+ENV JAVA_OPTS=""
+
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar" ]

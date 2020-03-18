@@ -1,0 +1,17 @@
+package {{ repository_package }};
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+import {{ entity_package }};
+
+/**
+ * @author {{ author }}
+ * @version {{ version }}
+ * @date {{ date }}
+ * @powered by Tom Brain
+ */
+@Repository
+public interface {{ class_name }}Repository extends MongoRepository<{{ class_name }} , String> {
+
+}
+

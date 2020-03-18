@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js"></script>
+    <script type="text/javascript" src="//cdn.bootcss.com/socket.io/1.5.1/socket.io.min.js"></script>
+</head>
+<body>
+<div style="width: 100%;height: 30%;  position: fixed;left: 0px;top:0px;z-index: 9999 ">
+    <textarea id="log" style="width: 99%; height: 200px;"></textarea>
+</div>
+<form id="form" style="margin-top: 15%;">
+    <div style="width: 100%; min-height: 150px; border: 0px silver solid;float: left;">
+        <h3>TBrain 配置</h3>
+        <div style="width: 49.5%;  float: left; ">
+                <textarea id="inis" name="inis" style="width: 99%; height: 400px;">
+{{ ini_info }}
+                </textarea>
+            <br/>
+
+            <input value="获取数据库读取结果" id="mysql" type="button"/>
+            <textarea id="mysql_info" name="tables" style="width: 99%; height: 400px;"></textarea>
+            <br/>
+        </div>
+
+        <div id="dao" style="width: 49.5%; min-height: 170px; float:right;">
+            <h3>添加业务类</h3>
+            <hr/>
+            <input type="checkbox" name="entity" checked="checked" id="entity"/> Entity<br/>
+            <input type="checkbox" name="controller" checked="checked" id="controller"/> Controller<br/>
+            <input type="checkbox" name="service" checked="checked" id="service"/> Service<br/>
+            <input type="checkbox" name="repository" checked="checked" id="repository"/> Dao<br/>
+            <input type="checkbox" name="configuration" checked="checked" id="configuration"/> Configuration<br/>
+            <input type="checkbox" name="files" id="files"/> Files<br/>
+            <br>
+
+            <h3>部署方式</h3>
+            <hr/>
+            <input type="checkbox" name="docker" id="docker"/> 生成docker镜像<br/>
+            <br>
+            <p style="float: left">
+                <input class="button" type="button" id="commit" name="commit" value=" 生成数据服务类 "/>
+            </p>
+            {% if msg %}
+                <strong>msg:</strong> {{ msg }}
+            {% endif %}
+            {% if file_name %}
+                <strong>下载文件:</strong> <a href="/download/{{ file_name }}">{{ file_name }}</a>
+            {% endif %}
+        </div>
+    </div>
+</form>
+<hr/>
+<form id="flowable" action="/createFlowableClass" method=post enctype=multipart/form-data>
+    <h3>BPMN</h3>
+    <h3>TBrain 配置</h3>
+    <div id="mysql" style="width: 49.5%;  float: left; ">
+                <textarea id="flowableInis" name="flowableInis" style="width: 99%; height: 400px;">
+{{ ini_info }}
+                </textarea>
+    </div>
+    <input type="file" name="bpmns" id="bpmns" multiple/>
+    <input type="button" id="flowableCommit" value="生成流程服务类"/>
+</form>
+<hr/>
+
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+        var socket = io.connect();
+
+        socket.on('connect', function () {
+            socket.emit('connect_event', {data: 'connected!'});
+        });
+
+        socket.on('server_response', function (msg) {
+            console.log(msg.data);
+            $('#log').append(msg.data.toString());
+        });
+
+        $("#flowableCommit").click(function () {
+            $("#flowable").ajaxSubmit();
+        });
+
+        $("#commit").click(function () {
+            $.post('/createClass',
+                $("#form").serialize(),
+                function (data) {
+                    $("#dao").append("<br /><br /><hr /><strong>下载文件:</strong> <a href='/download/" + data + "'>" + data + "</a>")
+                })
+        });
+
+        $("#mysql").click(
+            function () {
+                $.get('/mysql_info',
+                    {
+                        inis: document.getElementById("inis").value
+                    },
+                    function (data) {
+                        var json = JSON.parse(data);
+                        $("#mysql_info").val(json);
+                    }
+                )
+            }
+        )
+    })
+</script>
+</body>
+</html>

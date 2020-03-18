@@ -1,0 +1,27 @@
+package {{ package }}.configuration;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.Date;
+
+@Configuration
+public class ConvertConfiguration implements WebMvcConfigurer{
+    /**
+     * 时间戳str转date
+     * @return
+     */
+    @Bean
+    public Converter<String, Date> stringToDateConvert() {
+        return new Converter<String, Date>() {
+            @Override
+            public Date convert(String source) {
+                Long dateStamp=Long.parseLong(source);
+                Date date=new Date(dateStamp);
+                return date;
+            }
+        };
+    }
+}

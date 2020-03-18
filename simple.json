@@ -1,0 +1,1628 @@
+[
+  {
+    "table": "yw_dsfpjb",
+    "class": "Yw_Dsfpjb",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "DSFPJ": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "DSFPJ": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "DSFPJ": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "DSFPJ": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "DSFPJ": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "DSFPJ": "第三方评价"
+    },
+    "tableComment": "第三方评价表",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  },
+  {
+    "table": "yw_dzzkpjb",
+    "class": "Yw_Dzzkpjb",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "XMBH": "String",
+      "XMMC": "String",
+      "WCDW": "String",
+      "PSZJ": "String",
+      "KCND": "String",
+      "KZYY": "String",
+      "KCGM": "String",
+      "KCKCKXX": "String",
+      "ZHPJ": "String",
+      "TJFS": "Integer",
+      "DJ": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "XMBH": "",
+      "XMMC": "",
+      "WCDW": "",
+      "PSZJ": "",
+      "KCND": "",
+      "KZYY": "",
+      "KCGM": "",
+      "KCKCKXX": "",
+      "ZHPJ": "",
+      "TJFS": "",
+      "DJ": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "XMBH": "nullable = true",
+      "XMMC": "nullable = true",
+      "WCDW": "nullable = true",
+      "PSZJ": "nullable = true",
+      "KCND": "nullable = true",
+      "KZYY": "nullable = true",
+      "KCGM": "nullable = true",
+      "KCKCKXX": "nullable = true",
+      "ZHPJ": "nullable = true",
+      "TJFS": "nullable = true",
+      "DJ": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "XMBH": "null",
+      "XMMC": "null",
+      "WCDW": "null",
+      "PSZJ": "null",
+      "KCND": "null",
+      "KZYY": "null",
+      "KCGM": "null",
+      "KCKCKXX": "null",
+      "ZHPJ": "null",
+      "TJFS": "null",
+      "DJ": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "XMBH": "",
+      "XMMC": "",
+      "WCDW": "",
+      "PSZJ": "",
+      "KCND": "",
+      "KZYY": "",
+      "KCGM": "",
+      "KCKCKXX": "",
+      "ZHPJ": "",
+      "TJFS": "",
+      "DJ": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "XMBH": "项目编号",
+      "XMMC": "项目名称",
+      "WCDW": "完成单位",
+      "PSZJ": "评审专家",
+      "KCND": "勘查难度",
+      "KZYY": "矿种意义",
+      "KCGM": "矿床规模",
+      "KCKCKXX": "矿床开采可行性",
+      "ZHPJ": "综合评价",
+      "TJFS": "推荐分数",
+      "DJ": "等级"
+    },
+    "tableComment": "地质找矿评价表",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  },
+  {
+    "table": "yw_fill_desc",
+    "class": "Yw_Fill_Desc",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "AUTHOR": "String",
+      "TIME": "Date",
+      "ATTACHMENT": "String",
+      "TITLE": "String",
+      "CONTENT": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "AUTHOR": "",
+      "TIME": "",
+      "ATTACHMENT": "",
+      "TITLE": "",
+      "CONTENT": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "AUTHOR": "nullable = true",
+      "TIME": "nullable = true",
+      "ATTACHMENT": "nullable = true",
+      "TITLE": "nullable = true",
+      "CONTENT": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "AUTHOR": "null",
+      "TIME": "null",
+      "ATTACHMENT": "null",
+      "TITLE": "null",
+      "CONTENT": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "AUTHOR": "",
+      "TIME": "",
+      "ATTACHMENT": "",
+      "TITLE": "",
+      "CONTENT": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "AUTHOR": "作者",
+      "TIME": "时间",
+      "ATTACHMENT": "附件",
+      "TITLE": "标题",
+      "CONTENT": "内容"
+    },
+    "tableComment": "",
+    "tableForeign": ""
+  },
+  {
+    "table": "yw_fjmlb",
+    "class": "Yw_Fjmlb",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "FJML_NR_XH": "String",
+      "FJML_NR_FJMC": "String",
+      "FJML_NR_FJLB": "String",
+      "FJML_NR_XZDZ": "String",
+      "FJML_NR_SCZT": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "FJML_NR_XH": "",
+      "FJML_NR_FJMC": "",
+      "FJML_NR_FJLB": "",
+      "FJML_NR_XZDZ": "",
+      "FJML_NR_SCZT": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "FJML_NR_XH": "nullable = true",
+      "FJML_NR_FJMC": "nullable = true",
+      "FJML_NR_FJLB": "nullable = true",
+      "FJML_NR_XZDZ": "nullable = true",
+      "FJML_NR_SCZT": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "FJML_NR_XH": "null",
+      "FJML_NR_FJMC": "null",
+      "FJML_NR_FJLB": "null",
+      "FJML_NR_XZDZ": "null",
+      "FJML_NR_SCZT": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "FJML_NR_XH": "",
+      "FJML_NR_FJMC": "",
+      "FJML_NR_FJLB": "",
+      "FJML_NR_XZDZ": "",
+      "FJML_NR_SCZT": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "FJML_NR_XH": "序号",
+      "FJML_NR_FJMC": "附件名称",
+      "FJML_NR_FJLB": "附件类别",
+      "FJML_NR_XZDZ": "下载地址",
+      "FJML_NR_SCZT": "上传状态"
+    },
+    "tableComment": "附件目录表",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  },
+  {
+    "table": "yw_historyopinion",
+    "class": "Yw_Historyopinion",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "id",
+    "column": {
+      "id": "Long",
+      "createTime": "String",
+      "dealUser": "String",
+      "opinion": "String",
+      "processId": "String",
+      "status": "String",
+      "step": "String",
+      "taskId": "String"
+    },
+    "columnKey": {
+      "id": "@Id",
+      "createTime": "",
+      "dealUser": "",
+      "opinion": "",
+      "processId": "",
+      "status": "",
+      "step": "",
+      "taskId": ""
+    },
+    "columnNullable": {
+      "id": "nullable = false",
+      "createTime": "nullable = true",
+      "dealUser": "nullable = true",
+      "opinion": "nullable = true",
+      "processId": "nullable = true",
+      "status": "nullable = true",
+      "step": "nullable = true",
+      "taskId": "nullable = true"
+    },
+    "columnDefault": {
+      "id": "null",
+      "createTime": "null",
+      "dealUser": "null",
+      "opinion": "null",
+      "processId": "null",
+      "status": "null",
+      "step": "null",
+      "taskId": "null"
+    },
+    "columnAutoincrease": {
+      "id": "",
+      "createTime": "",
+      "dealUser": "",
+      "opinion": "",
+      "processId": "",
+      "status": "",
+      "step": "",
+      "taskId": ""
+    },
+    "columnComment": {
+      "id": "",
+      "createTime": "",
+      "dealUser": "",
+      "opinion": "",
+      "processId": "",
+      "status": "",
+      "step": "",
+      "taskId": ""
+    },
+    "tableComment": "",
+    "tableForeign": ""
+  },
+  {
+    "table": "yw_jcyjyyypjb",
+    "class": "Yw_Jcyjyyypjb",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "XMBH": "String",
+      "XMMC": "String",
+      "WCDW": "String",
+      "PSZJ": "String",
+      "JSND": "String",
+      "JSSP": "String",
+      "HXQK": "Integer",
+      "GKFXQK": "Integer",
+      "HYLW": "Integer",
+      "ZZ": "Integer",
+      "ZLLX": "Integer",
+      "RJZZQ": "Integer",
+      "TGYYQJ": "String",
+      "JJSHXY": "String",
+      "ZHPJ": "String",
+      "TJFS": "Integer",
+      "DJ": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "XMBH": "",
+      "XMMC": "",
+      "WCDW": "",
+      "PSZJ": "",
+      "JSND": "",
+      "JSSP": "",
+      "HXQK": "",
+      "GKFXQK": "",
+      "HYLW": "",
+      "ZZ": "",
+      "ZLLX": "",
+      "RJZZQ": "",
+      "TGYYQJ": "",
+      "JJSHXY": "",
+      "ZHPJ": "",
+      "TJFS": "",
+      "DJ": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "XMBH": "nullable = true",
+      "XMMC": "nullable = true",
+      "WCDW": "nullable = true",
+      "PSZJ": "nullable = true",
+      "JSND": "nullable = true",
+      "JSSP": "nullable = true",
+      "HXQK": "nullable = true",
+      "GKFXQK": "nullable = true",
+      "HYLW": "nullable = true",
+      "ZZ": "nullable = true",
+      "ZLLX": "nullable = true",
+      "RJZZQ": "nullable = true",
+      "TGYYQJ": "nullable = true",
+      "JJSHXY": "nullable = true",
+      "ZHPJ": "nullable = true",
+      "TJFS": "nullable = true",
+      "DJ": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "XMBH": "null",
+      "XMMC": "null",
+      "WCDW": "null",
+      "PSZJ": "null",
+      "JSND": "null",
+      "JSSP": "null",
+      "HXQK": "null",
+      "GKFXQK": "null",
+      "HYLW": "null",
+      "ZZ": "null",
+      "ZLLX": "null",
+      "RJZZQ": "null",
+      "TGYYQJ": "null",
+      "JJSHXY": "null",
+      "ZHPJ": "null",
+      "TJFS": "null",
+      "DJ": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "XMBH": "",
+      "XMMC": "",
+      "WCDW": "",
+      "PSZJ": "",
+      "JSND": "",
+      "JSSP": "",
+      "HXQK": "",
+      "GKFXQK": "",
+      "HYLW": "",
+      "ZZ": "",
+      "ZLLX": "",
+      "RJZZQ": "",
+      "TGYYQJ": "",
+      "JJSHXY": "",
+      "ZHPJ": "",
+      "TJFS": "",
+      "DJ": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "XMBH": "项目编号",
+      "XMMC": "项目名称",
+      "WCDW": "完成单位",
+      "PSZJ": "评审专家",
+      "JSND": "技术难度",
+      "JSSP": "技术水平",
+      "HXQK": "核心期刊",
+      "GKFXQK": "公开发行期刊",
+      "HYLW": "会议论文",
+      "ZZ": "专著",
+      "ZLLX": "专利类型和数量",
+      "RJZZQ": "软件著作权",
+      "TGYYQJ": "推广应用前景",
+      "JJSHXY": "经济社会效益",
+      "ZHPJ": "综合评价",
+      "TJFS": "推荐分数",
+      "DJ": "等级"
+    },
+    "tableComment": "基础研究与应用评价表",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  },
+  {
+    "table": "yw_jjhshxyb",
+    "class": "Yw_Jjhshxyb",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "String",
+      "JJXYSLXSM": "String",
+      "SHXY": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "JJXYSLXSM": "",
+      "SHXY": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "JJXYSLXSM": "nullable = true",
+      "SHXY": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "JJXYSLXSM": "null",
+      "SHXY": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "JJXYSLXSM": "",
+      "SHXY": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "JJXYSLXSM": "经济效益所列项说明",
+      "SHXY": "社会效益"
+    },
+    "tableComment": "经济和社会效益表",
+    "tableForeign": ""
+  },
+  {
+    "table": "yw_jjxyxqb",
+    "class": "Yw_Jjxyxqb",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "JJHSHXY_JJXY_NF": "String",
+      "JJHSHXY_JJXY_XMTZE": "Double",
+      "JJHSHXY_JJXY_XZSR": "Double",
+      "JJHSHXY_JJXY_XZLR": "Double"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "JJHSHXY_JJXY_NF": "",
+      "JJHSHXY_JJXY_XMTZE": "",
+      "JJHSHXY_JJXY_XZSR": "",
+      "JJHSHXY_JJXY_XZLR": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "JJHSHXY_JJXY_NF": "nullable = true",
+      "JJHSHXY_JJXY_XMTZE": "nullable = true",
+      "JJHSHXY_JJXY_XZSR": "nullable = true",
+      "JJHSHXY_JJXY_XZLR": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "JJHSHXY_JJXY_NF": "null",
+      "JJHSHXY_JJXY_XMTZE": "null",
+      "JJHSHXY_JJXY_XZSR": "null",
+      "JJHSHXY_JJXY_XZLR": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "JJHSHXY_JJXY_NF": "",
+      "JJHSHXY_JJXY_XMTZE": "",
+      "JJHSHXY_JJXY_XZSR": "",
+      "JJHSHXY_JJXY_XZLR": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "JJHSHXY_JJXY_NF": "年份",
+      "JJHSHXY_JJXY_XMTZE": "",
+      "JJHSHXY_JJXY_XZSR": "",
+      "JJHSHXY_JJXY_XZLR": ""
+    },
+    "tableComment": "经济效益详情表",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  },
+  {
+    "table": "yw_jlsbjbxx",
+    "class": "Yw_Jlsbjbxx",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "ZT": "String",
+      "XMMC": "String",
+      "ZYPSZ": "String",
+      "TJDW": "String",
+      "XMLXR": "String",
+      "LXRSZDW": "String",
+      "XMLXRDH": "String",
+      "SJ": "String",
+      "YX": "String",
+      "TBSJ": "Date",
+      "ORG_ID": "String",
+      "PROCESS_ID": "String",
+      "TASK_ID": "Integer"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "ZT": "",
+      "XMMC": "",
+      "ZYPSZ": "",
+      "TJDW": "",
+      "XMLXR": "",
+      "LXRSZDW": "",
+      "XMLXRDH": "",
+      "SJ": "",
+      "YX": "",
+      "TBSJ": "",
+      "ORG_ID": "",
+      "PROCESS_ID": "",
+      "TASK_ID": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "ZT": "nullable = true",
+      "XMMC": "nullable = true",
+      "ZYPSZ": "nullable = true",
+      "TJDW": "nullable = true",
+      "XMLXR": "nullable = true",
+      "LXRSZDW": "nullable = true",
+      "XMLXRDH": "nullable = true",
+      "SJ": "nullable = true",
+      "YX": "nullable = true",
+      "TBSJ": "nullable = true",
+      "ORG_ID": "nullable = true",
+      "PROCESS_ID": "nullable = true",
+      "TASK_ID": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "ZT": "null",
+      "XMMC": "null",
+      "ZYPSZ": "null",
+      "TJDW": "null",
+      "XMLXR": "null",
+      "LXRSZDW": "null",
+      "XMLXRDH": "null",
+      "SJ": "null",
+      "YX": "null",
+      "TBSJ": "null",
+      "ORG_ID": "null",
+      "PROCESS_ID": "null",
+      "TASK_ID": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "ZT": "",
+      "XMMC": "",
+      "ZYPSZ": "",
+      "TJDW": "",
+      "XMLXR": "",
+      "LXRSZDW": "",
+      "XMLXRDH": "",
+      "SJ": "",
+      "YX": "",
+      "TBSJ": "",
+      "ORG_ID": "",
+      "PROCESS_ID": "",
+      "TASK_ID": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "ZT": "状态",
+      "XMMC": "项目名称",
+      "ZYPSZ": "专业评审组",
+      "TJDW": "推荐单位",
+      "XMLXR": "项目联系人",
+      "LXRSZDW": "联系人所在单位",
+      "XMLXRDH": "项目联系人电话",
+      "SJ": "手机",
+      "YX": "邮箱",
+      "TBSJ": "填报时间",
+      "ORG_ID": "部门ID",
+      "PROCESS_ID": "流程实例ID",
+      "TASK_ID": ""
+    },
+    "tableComment": "奖励申报基本信息",
+    "tableForeign": ""
+  },
+  {
+    "table": "yw_notify",
+    "class": "Yw_Notify",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "AUTHOR": "String",
+      "TIME": "Date",
+      "ATTACHMENT": "String",
+      "TITLE": "String",
+      "CONTENT": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "AUTHOR": "",
+      "TIME": "",
+      "ATTACHMENT": "",
+      "TITLE": "",
+      "CONTENT": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "AUTHOR": "nullable = true",
+      "TIME": "nullable = true",
+      "ATTACHMENT": "nullable = true",
+      "TITLE": "nullable = true",
+      "CONTENT": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "AUTHOR": "null",
+      "TIME": "null",
+      "ATTACHMENT": "null",
+      "TITLE": "null",
+      "CONTENT": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "AUTHOR": "",
+      "TIME": "",
+      "ATTACHMENT": "",
+      "TITLE": "",
+      "CONTENT": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "AUTHOR": "作者",
+      "TIME": "时间",
+      "ATTACHMENT": "附件",
+      "TITLE": "标题",
+      "CONTENT": "内容"
+    },
+    "tableComment": "",
+    "tableForeign": ""
+  },
+  {
+    "table": "yw_sbdwyjb",
+    "class": "Yw_Sbdwyjb",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "SBDWYJNR": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "SBDWYJNR": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "SBDWYJNR": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "SBDWYJNR": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "SBDWYJNR": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "SBDWYJNR": "申报单位意见内容"
+    },
+    "tableComment": "申报单位意见表",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  },
+  {
+    "table": "yw_sghpjb",
+    "class": "Yw_Sghpjb",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "XMBH": "String",
+      "XMMC": "String",
+      "WCDW": "String",
+      "PSZJ": "String",
+      "JSND": "String",
+      "JSFF": "String",
+      "KCJSSP": "String",
+      "CGZL": "String",
+      "JJSHXY": "String",
+      "HXQK": "Integer",
+      "GKFXQK": "String",
+      "HYLW": "String",
+      "ZZ": "String",
+      "ZHPJ": "String",
+      "TJFS": "String",
+      "DJ": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "XMBH": "",
+      "XMMC": "",
+      "WCDW": "",
+      "PSZJ": "",
+      "JSND": "",
+      "JSFF": "",
+      "KCJSSP": "",
+      "CGZL": "",
+      "JJSHXY": "",
+      "HXQK": "",
+      "GKFXQK": "",
+      "HYLW": "",
+      "ZZ": "",
+      "ZHPJ": "",
+      "TJFS": "",
+      "DJ": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "XMBH": "nullable = true",
+      "XMMC": "nullable = true",
+      "WCDW": "nullable = true",
+      "PSZJ": "nullable = true",
+      "JSND": "nullable = true",
+      "JSFF": "nullable = true",
+      "KCJSSP": "nullable = true",
+      "CGZL": "nullable = true",
+      "JJSHXY": "nullable = true",
+      "HXQK": "nullable = true",
+      "GKFXQK": "nullable = true",
+      "HYLW": "nullable = true",
+      "ZZ": "nullable = true",
+      "ZHPJ": "nullable = true",
+      "TJFS": "nullable = true",
+      "DJ": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "XMBH": "null",
+      "XMMC": "null",
+      "WCDW": "null",
+      "PSZJ": "null",
+      "JSND": "null",
+      "JSFF": "null",
+      "KCJSSP": "null",
+      "CGZL": "null",
+      "JJSHXY": "null",
+      "HXQK": "null",
+      "GKFXQK": "null",
+      "HYLW": "null",
+      "ZZ": "null",
+      "ZHPJ": "null",
+      "TJFS": "null",
+      "DJ": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "XMBH": "",
+      "XMMC": "",
+      "WCDW": "",
+      "PSZJ": "",
+      "JSND": "",
+      "JSFF": "",
+      "KCJSSP": "",
+      "CGZL": "",
+      "JJSHXY": "",
+      "HXQK": "",
+      "GKFXQK": "",
+      "HYLW": "",
+      "ZZ": "",
+      "ZHPJ": "",
+      "TJFS": "",
+      "DJ": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "XMBH": "项目编号",
+      "XMMC": "项目名称",
+      "WCDW": "完成单位",
+      "PSZJ": "评审专家",
+      "JSND": "技术难度",
+      "JSFF": "技术方法",
+      "KCJSSP": "勘查技术水平",
+      "CGZL": "成果质量",
+      "JJSHXY": "经济社会效益",
+      "HXQK": "核心期刊",
+      "GKFXQK": "公开发行期刊",
+      "HYLW": "会议论文",
+      "ZZ": "专著",
+      "ZHPJ": "综合评价",
+      "TJFS": "推荐分数",
+      "DJ": "等级"
+    },
+    "tableComment": "水工环评价表",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  },
+  {
+    "table": "yw_tgyyb",
+    "class": "Yw_Tgyyb",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "YYDWMC": "String",
+      "YYJS": "String",
+      "YYQZSJ": "String",
+      "YYDWLXRDH": "String",
+      "YYXG": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "YYDWMC": "",
+      "YYJS": "",
+      "YYQZSJ": "",
+      "YYDWLXRDH": "",
+      "YYXG": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "YYDWMC": "nullable = true",
+      "YYJS": "nullable = true",
+      "YYQZSJ": "nullable = true",
+      "YYDWLXRDH": "nullable = true",
+      "YYXG": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "YYDWMC": "null",
+      "YYJS": "null",
+      "YYQZSJ": "null",
+      "YYDWLXRDH": "null",
+      "YYXG": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "YYDWMC": "",
+      "YYJS": "",
+      "YYQZSJ": "",
+      "YYDWLXRDH": "",
+      "YYXG": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "YYDWMC": "应用单位名称",
+      "YYJS": "应用技术",
+      "YYQZSJ": "应用起止时间",
+      "YYDWLXRDH": "应用单位联系人/电话",
+      "YYXG": "应用效果"
+    },
+    "tableComment": "推广应用表",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  },
+  {
+    "table": "yw_wcdwqkb",
+    "class": "Yw_Wcdwqkb",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "DWMC": "String",
+      "SZD": "String",
+      "PM": "String",
+      "DWXZ": "String",
+      "CZ": "String",
+      "LXR": "String",
+      "LXDH": "String",
+      "YDDH": "String",
+      "TXDZ": "String",
+      "YZBM": "String",
+      "DZXX": "String",
+      "DBXMGX": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "DWMC": "",
+      "SZD": "",
+      "PM": "",
+      "DWXZ": "",
+      "CZ": "",
+      "LXR": "",
+      "LXDH": "",
+      "YDDH": "",
+      "TXDZ": "",
+      "YZBM": "",
+      "DZXX": "",
+      "DBXMGX": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "DWMC": "nullable = true",
+      "SZD": "nullable = true",
+      "PM": "nullable = true",
+      "DWXZ": "nullable = true",
+      "CZ": "nullable = true",
+      "LXR": "nullable = true",
+      "LXDH": "nullable = true",
+      "YDDH": "nullable = true",
+      "TXDZ": "nullable = true",
+      "YZBM": "nullable = true",
+      "DZXX": "nullable = true",
+      "DBXMGX": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "DWMC": "null",
+      "SZD": "null",
+      "PM": "null",
+      "DWXZ": "null",
+      "CZ": "null",
+      "LXR": "null",
+      "LXDH": "null",
+      "YDDH": "null",
+      "TXDZ": "null",
+      "YZBM": "null",
+      "DZXX": "null",
+      "DBXMGX": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "DWMC": "",
+      "SZD": "",
+      "PM": "",
+      "DWXZ": "",
+      "CZ": "",
+      "LXR": "",
+      "LXDH": "",
+      "YDDH": "",
+      "TXDZ": "",
+      "YZBM": "",
+      "DZXX": "",
+      "DBXMGX": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "DWMC": "单位名称",
+      "SZD": "所在地",
+      "PM": "排名",
+      "DWXZ": "单位性质",
+      "CZ": "传真",
+      "LXR": "联系人",
+      "LXDH": "联系电话",
+      "YDDH": "移动电话",
+      "TXDZ": "通讯地址",
+      "YZBM": "邮政编码",
+      "DZXX": "电子信箱",
+      "DBXMGX": "对本项目贡献"
+    },
+    "tableComment": "完成单位情况表",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  },
+  {
+    "table": "yw_xmjbqk",
+    "class": "Yw_Xmjbqk",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "SBDW": "String",
+      "SBRQ": "Date",
+      "SBJZ": "String",
+      "ZYSJZY": "String",
+      "ZYWCDW": "String",
+      "ZYWCR": "String",
+      "RWLY": "String",
+      "XMHRWSBH": "String",
+      "XMQZSJ": "Date",
+      "XMYSDW": "String",
+      "YSRQ": "Date",
+      "XMGDSJ": "Date",
+      "HJSJ": "Date"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "SBDW": "",
+      "SBRQ": "",
+      "SBJZ": "",
+      "ZYSJZY": "",
+      "ZYWCDW": "",
+      "ZYWCR": "",
+      "RWLY": "",
+      "XMHRWSBH": "",
+      "XMQZSJ": "",
+      "XMYSDW": "",
+      "YSRQ": "",
+      "XMGDSJ": "",
+      "HJSJ": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "SBDW": "nullable = true",
+      "SBRQ": "nullable = true",
+      "SBJZ": "nullable = true",
+      "ZYSJZY": "nullable = true",
+      "ZYWCDW": "nullable = true",
+      "ZYWCR": "nullable = true",
+      "RWLY": "nullable = true",
+      "XMHRWSBH": "nullable = true",
+      "XMQZSJ": "nullable = true",
+      "XMYSDW": "nullable = true",
+      "YSRQ": "nullable = true",
+      "XMGDSJ": "nullable = true",
+      "HJSJ": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "SBDW": "null",
+      "SBRQ": "null",
+      "SBJZ": "null",
+      "ZYSJZY": "null",
+      "ZYWCDW": "null",
+      "ZYWCR": "null",
+      "RWLY": "null",
+      "XMHRWSBH": "null",
+      "XMQZSJ": "null",
+      "XMYSDW": "null",
+      "YSRQ": "null",
+      "XMGDSJ": "null",
+      "HJSJ": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "SBDW": "",
+      "SBRQ": "",
+      "SBJZ": "",
+      "ZYSJZY": "",
+      "ZYWCDW": "",
+      "ZYWCR": "",
+      "RWLY": "",
+      "XMHRWSBH": "",
+      "XMQZSJ": "",
+      "XMYSDW": "",
+      "YSRQ": "",
+      "XMGDSJ": "",
+      "HJSJ": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "SBDW": "申报单位",
+      "SBRQ": "申报日期",
+      "SBJZ": "申报奖种",
+      "ZYSJZY": "主要涉及专业",
+      "ZYWCDW": "主要完成单位",
+      "ZYWCR": "主要完成人",
+      "RWLY": "任务来源",
+      "XMHRWSBH": "项目或任务书编号",
+      "XMQZSJ": "项目起止时间",
+      "XMYSDW": "项目验收单位",
+      "YSRQ": "验收日期",
+      "XMGDSJ": "项目归档时间",
+      "HJSJ": "汇交时间"
+    },
+    "tableComment": "项目基本情况",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  },
+  {
+    "table": "yw_xmjj",
+    "class": "Yw_Xmjj",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "XMJJNR": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "XMJJNR": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "XMJJNR": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "XMJJNR": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "XMJJNR": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "XMJJNR": "项目简介内容"
+    },
+    "tableComment": "项目简介",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  },
+  {
+    "table": "yw_zsclwlzb",
+    "class": "Yw_Zsclwlzb",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "ZSCQML_LWLZ_LWLZMC": "String",
+      "ZSCQML_LWLZ_FBKW": "String",
+      "ZSCQML_LWLZ_YXYZ": "Double",
+      "ZSCQML_LWLZ_FBSJJQ": "Date",
+      "ZSCQML_LWLZ_ZZ": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "ZSCQML_LWLZ_LWLZMC": "",
+      "ZSCQML_LWLZ_FBKW": "",
+      "ZSCQML_LWLZ_YXYZ": "",
+      "ZSCQML_LWLZ_FBSJJQ": "",
+      "ZSCQML_LWLZ_ZZ": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "ZSCQML_LWLZ_LWLZMC": "nullable = true",
+      "ZSCQML_LWLZ_FBKW": "nullable = true",
+      "ZSCQML_LWLZ_YXYZ": "nullable = true",
+      "ZSCQML_LWLZ_FBSJJQ": "nullable = true",
+      "ZSCQML_LWLZ_ZZ": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "ZSCQML_LWLZ_LWLZMC": "null",
+      "ZSCQML_LWLZ_FBKW": "null",
+      "ZSCQML_LWLZ_YXYZ": "null",
+      "ZSCQML_LWLZ_FBSJJQ": "null",
+      "ZSCQML_LWLZ_ZZ": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "ZSCQML_LWLZ_LWLZMC": "",
+      "ZSCQML_LWLZ_FBKW": "",
+      "ZSCQML_LWLZ_YXYZ": "",
+      "ZSCQML_LWLZ_FBSJJQ": "",
+      "ZSCQML_LWLZ_ZZ": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "ZSCQML_LWLZ_LWLZMC": "论文专著名称",
+      "ZSCQML_LWLZ_FBKW": "发表刊物",
+      "ZSCQML_LWLZ_YXYZ": "",
+      "ZSCQML_LWLZ_FBSJJQ": "发表（出版）<br>时间、卷、期",
+      "ZSCQML_LWLZ_ZZ": "作者（按刊物发表顺序）"
+    },
+    "tableComment": "知识产权论文论著表",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  },
+  {
+    "table": "yw_zscqzlb",
+    "class": "Yw_Zscqzlb",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "ZSCQML_ZL_ZLMC": "String",
+      "ZSCQML_ZL_ZLLB": "String",
+      "ZSCQML_ZL_FMR": "String",
+      "ZSCQML_ZL_ZSCQR": "String",
+      "ZSCQML_ZL_ZSCQH": "String",
+      "ZSCQML_ZL_QDRQ": "Date"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "ZSCQML_ZL_ZLMC": "",
+      "ZSCQML_ZL_ZLLB": "",
+      "ZSCQML_ZL_FMR": "",
+      "ZSCQML_ZL_ZSCQR": "",
+      "ZSCQML_ZL_ZSCQH": "",
+      "ZSCQML_ZL_QDRQ": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "ZSCQML_ZL_ZLMC": "nullable = true",
+      "ZSCQML_ZL_ZLLB": "nullable = true",
+      "ZSCQML_ZL_FMR": "nullable = true",
+      "ZSCQML_ZL_ZSCQR": "nullable = true",
+      "ZSCQML_ZL_ZSCQH": "nullable = true",
+      "ZSCQML_ZL_QDRQ": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "ZSCQML_ZL_ZLMC": "null",
+      "ZSCQML_ZL_ZLLB": "null",
+      "ZSCQML_ZL_FMR": "null",
+      "ZSCQML_ZL_ZSCQR": "null",
+      "ZSCQML_ZL_ZSCQH": "null",
+      "ZSCQML_ZL_QDRQ": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "ZSCQML_ZL_ZLMC": "",
+      "ZSCQML_ZL_ZLLB": "",
+      "ZSCQML_ZL_FMR": "",
+      "ZSCQML_ZL_ZSCQR": "",
+      "ZSCQML_ZL_ZSCQH": "",
+      "ZSCQML_ZL_QDRQ": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "ZSCQML_ZL_ZLMC": "专利名称",
+      "ZSCQML_ZL_ZLLB": "专利类别",
+      "ZSCQML_ZL_FMR": "发明人",
+      "ZSCQML_ZL_ZSCQR": "知识产权人",
+      "ZSCQML_ZL_ZSCQH": "知识产权号",
+      "ZSCQML_ZL_QDRQ": "取得日期"
+    },
+    "tableComment": "知识产权专利表",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  },
+  {
+    "table": "yw_zykjcx",
+    "class": "Yw_Zykjcx",
+    "type": "mysql_jpa",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "ZYKJCXNR": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "ZYKJCXNR": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "ZYKJCXNR": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "0",
+      "XMWJ": "null",
+      "ZYKJCXNR": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "",
+      "XMWJ": "",
+      "ZYKJCXNR": ""
+    },
+    "columnComment": {
+      "ID": "0' COMMENT 'ID",
+      "XMWJ": "项目外键",
+      "ZYKJCXNR": "主要科技创新内容"
+    },
+    "tableComment": "主要科技创新",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  },
+  {
+    "table": "yw_zywcrqkb",
+    "class": "Yw_Zywcrqkb",
+    "type": "mongodb",
+    "package": "com.tom.dao",
+    "id": "ID",
+    "column": {
+      "ID": "Integer",
+      "XMWJ": "Integer",
+      "XM": "String",
+      "XB": "String",
+      "PM": "String",
+      "CSNY": "Date",
+      "CSD": "String",
+      "MZ": "String",
+      "XZZW": "String",
+      "JSZC": "String",
+      "XLXW": "String",
+      "GZDW": "String",
+      "SZD": "String",
+      "TXDZ": "String",
+      "BGDH": "String",
+      "YZBM": "String",
+      "DZXX": "String",
+      "YDDH": "String",
+      "BYXX": "String",
+      "WHCD": "String",
+      "CHTJJJYSKJJL": "String",
+      "ZYJSGX": "String"
+    },
+    "columnKey": {
+      "ID": "@Id",
+      "XMWJ": "",
+      "XM": "",
+      "XB": "",
+      "PM": "",
+      "CSNY": "",
+      "CSD": "",
+      "MZ": "",
+      "XZZW": "",
+      "JSZC": "",
+      "XLXW": "",
+      "GZDW": "",
+      "SZD": "",
+      "TXDZ": "",
+      "BGDH": "",
+      "YZBM": "",
+      "DZXX": "",
+      "YDDH": "",
+      "BYXX": "",
+      "WHCD": "",
+      "CHTJJJYSKJJL": "",
+      "ZYJSGX": ""
+    },
+    "columnNullable": {
+      "ID": "nullable = false",
+      "XMWJ": "nullable = false",
+      "XM": "nullable = true",
+      "XB": "nullable = true",
+      "PM": "nullable = true",
+      "CSNY": "nullable = true",
+      "CSD": "nullable = true",
+      "MZ": "nullable = true",
+      "XZZW": "nullable = true",
+      "JSZC": "nullable = true",
+      "XLXW": "nullable = true",
+      "GZDW": "nullable = true",
+      "SZD": "nullable = true",
+      "TXDZ": "nullable = true",
+      "BGDH": "nullable = true",
+      "YZBM": "nullable = true",
+      "DZXX": "nullable = true",
+      "YDDH": "nullable = true",
+      "BYXX": "nullable = true",
+      "WHCD": "nullable = true",
+      "CHTJJJYSKJJL": "nullable = true",
+      "ZYJSGX": "nullable = true"
+    },
+    "columnDefault": {
+      "ID": "null",
+      "XMWJ": "null",
+      "XM": "null",
+      "XB": "null",
+      "PM": "null",
+      "CSNY": "null",
+      "CSD": "null",
+      "MZ": "null",
+      "XZZW": "null",
+      "JSZC": "null",
+      "XLXW": "null",
+      "GZDW": "null",
+      "SZD": "null",
+      "TXDZ": "null",
+      "BGDH": "null",
+      "YZBM": "null",
+      "DZXX": "null",
+      "YDDH": "null",
+      "BYXX": "null",
+      "WHCD": "null",
+      "CHTJJJYSKJJL": "null",
+      "ZYJSGX": "null"
+    },
+    "columnAutoincrease": {
+      "ID": "@GeneratedValue(strategy = GenerationType.AUTO)",
+      "XMWJ": "",
+      "XM": "",
+      "XB": "",
+      "PM": "",
+      "CSNY": "",
+      "CSD": "",
+      "MZ": "",
+      "XZZW": "",
+      "JSZC": "",
+      "XLXW": "",
+      "GZDW": "",
+      "SZD": "",
+      "TXDZ": "",
+      "BGDH": "",
+      "YZBM": "",
+      "DZXX": "",
+      "YDDH": "",
+      "BYXX": "",
+      "WHCD": "",
+      "CHTJJJYSKJJL": "",
+      "ZYJSGX": ""
+    },
+    "columnComment": {
+      "ID": "ID",
+      "XMWJ": "项目外键",
+      "XM": "项目外键",
+      "XB": "性别",
+      "PM": "排名",
+      "CSNY": "出生年月",
+      "CSD": "出生地",
+      "MZ": "民族",
+      "XZZW": "行政职务",
+      "JSZC": "技术职称",
+      "XLXW": "学历学位",
+      "GZDW": "工作单位",
+      "SZD": "所在地",
+      "TXDZ": "通讯地址",
+      "BGDH": "办公电话",
+      "YZBM": "邮政编码",
+      "DZXX": "电子信箱",
+      "YDDH": "移动电话",
+      "BYXX": "毕业学校",
+      "WHCD": "文化程度",
+      "CHTJJJYSKJJL": "曾获厅局级及以上科技奖励",
+      "ZYJSGX": "主要技术贡献"
+    },
+    "tableComment": "主要完成人情况表",
+    "tableForeign": [
+      {
+        "foreign_key": "XMWJ",
+        "foreign_table": "yw_jlsbjbxx",
+        "foreign_table_id": "ID"
+      }
+    ]
+  }
+]

@@ -1,0 +1,28 @@
+package {{ package }};
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * @author {{ author }}
+ * @version {{ version }}
+ * @date {{ date }}
+ * @powered by Tom Brain
+ */
+public interface CRUDService<S,T> {
+    List<T> listAll();
+
+    T getById(S id);
+
+    T saveOrUpdate(T entity);
+
+    T save(T entity) throws Exception;
+
+    T update(T entity) throws Exception;
+
+    void delete(S id);
+
+    Page<T> page(Pageable pageable);
+}

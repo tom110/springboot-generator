@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:mysql://{{ iniParser.db_host }}:{{ iniParser.db_port }}/{{ iniParser.db_name }}?characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=GMT
+    username: {{ iniParser.db_user }}
+    password: {{ iniParser.db_pass }}
+  {% if params.files %}
+  data:
+    mongodb:
+      host: {{ iniParser.db_mongohost }}
+      port: {{ iniParser.db_mongoport }}
+      database: {{ iniParser.db_mongoname }}
+  {% endif %}
+  servlet:
+    multipart:
+      max-request-size: {{ iniParser.dep_servletmaxreqsize }}
+      max-file-size: {{ iniParser.dep_servletmaxfilesize }}
+server:
+  port: {{ iniParser.dep_serverport }}

@@ -1,0 +1,22 @@
+package {{ package }};
+
+import io.swagger.annotations.ApiModelProperty;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+import javax.persistence.Id;
+import java.util.Date;
+
+/**
+ * @author admin
+ * @version 1.0
+ * @Description 实体类
+ * @date {{ date }}
+ */
+@Document(collection = "{{ table_name }}")
+public class {{ class_name }} {
+
+{{ propertys | safe }}
+
+{{ methods | safe }}
+}
