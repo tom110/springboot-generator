@@ -1,0 +1,16 @@
+package {{ package }}.service;
+
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+
+public interface VertifyService {
+    JSONArray getUserMenus(Integer userid);
+    JSONObject getUsers(Integer pagenum, Integer pagesize);
+    JSONObject changeUserState(Integer userid,Boolean type) throws Exception;
+
+    JSONArray getRoles();
+
+    JSONArray getPermissions(String type);
+
+    JSONArray removePermissionByRoleid(Integer roleid, Integer permissionid) throws Exception;
+}

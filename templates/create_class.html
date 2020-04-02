@@ -36,6 +36,7 @@
             <input type="checkbox" name="repository" checked="checked" id="repository"/> Dao<br/>
             <input type="checkbox" name="configuration" checked="checked" id="configuration"/> Configuration<br/>
             <input type="checkbox" name="files" id="files"/> Files<br/>
+            <input type="checkbox" name="permission" id="permission"/> Permission<br/>
             <br>
 
             <h3>部署方式</h3>
@@ -97,7 +98,8 @@
             function () {
                 $.get('/mysql_info',
                     {
-                        inis: document.getElementById("inis").value
+                        inis: document.getElementById("inis").value,
+                        permission: document.getElementById("permission").checked
                     },
                     function (data) {
                         var json = JSON.parse(data);

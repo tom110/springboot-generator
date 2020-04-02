@@ -177,9 +177,14 @@ def index():
 @app.route('/mysql_info')
 def mysql_info():
     inis = request.args.get("inis")
+    permission = request.args.get("permission")
     updateInitparser(inis)
     # 通过新的ini文件获取数据库信息
-    mysql = AnalyseMysql(iniParser)
+    mysql = AnalyseMysql(iniParser, socketio, permission=permission)
+    # 执行permission.sql，添加us_manager us_role us_permission us_permissionapi四个表和数据
+    if permission == "true":
+        mysql.execsql('permission.sql')
+
     mysql_info = mysql.getMysqlInfo()
 
     socketio.emit('server_response', {'data': '\n生成数据库信息成功！'})
@@ -210,13 +215,17 @@ def create_class():
     docker = request.form.get('docker')
     files = request.form.get('files')
     configuration = request.form.get('configuration')
+    permission = request.form.get("permission")
+
+    # 通过新的ini文件获取数据库信息
+    mysql = AnalyseMysql(iniParser, socketio, permission=permission)
 
     update_applicationyml(docker=docker, files=files)
     if docker and len(docker) >= 1:
         sys_print('--- 创建Dockerfile')
         create_Dockerfile(iniParser, docker=docker)
     sys_print('--- 修改pom.xml')
-    update_pom(iniParser, docker=docker, files=files)
+    update_pom(iniParser, docker=docker, files=files, permission=permission)
     for fields in tables:
         # print(fields)
         j = fields
@@ -249,7 +258,8 @@ def create_class():
             repository = request.form.get('repository')
             if repository and len(repository) >= 1:
                 sys_print('--- 开始创建repository类文件')
-                create_repository(class_name, package, j['id'], j['column'], d, author, version, db_type)
+                create_repository(class_name, package, j['id'], j['column'], d, author, version, db_type,
+                                  permission=permission)
                 sys_print('--- 创建repository类成功')
             service = request.form.get('service')
             if service and len(service) >= 1:
@@ -260,7 +270,10 @@ def create_class():
             if controller and len(controller) >= 1:
                 sys_print('--- 开始创建controller类文件')
                 create_controller(class_name, package, j['tableComment'], j['id'], j['column'], d, author, version,
-                                  db_type)
+                                  db_type, permission=permission)
+                if permission and len(permission)>0:
+                    mysql.insertPermission(j['tableComment'], class_name)
+                    sys_print('--- 插入controller基本权限完成')
                 sys_print('--- 创建controller类成功')
 
     msg = None
@@ -285,8 +298,10 @@ def create_class():
                 create_entity_foreign_key(class_name, package, foreigns_detail)
                 sys_print('--- 修改Entity类文件外键成功')
                 sys_print('--- 开始创建单项查找Repository接口函数')
-                # create_repository_findBy_singleValue(class_name,package,column,columnComment,columnKey,foreigns_detail)
-                create_repository_findBy_singleValue_page(class_name, package, column, columnComment, columnKey)
+                # create_repository_findBy_singleValue(class_name, package, column, columnComment, columnKey,
+                #                                     foreigns_detail, permission=permission)
+                create_repository_findBy_singleValue_page(class_name, package, column, columnComment, columnKey,
+                                                          permission=permission, mysql=mysql)
                 sys_print('--- 创建单项查找Repository-Controller接口函数成功')
 
     if configuration and len(configuration) >= 1:
@@ -296,8 +311,15 @@ def create_class():
 
     if files and len(files) >= 1:
         sys_print('--- 开始创建文件存储相关类文件')
-        create_files(package, files=files)
+        create_files(package, files=files, permission=permission)
+        if permission and len(permission) >= 1:
+            mysql.insertFile()
         sys_print('--- 创建文件存储相关类文件成功')
+
+    if permission and len(permission) >= 1:
+        sys_print('--- 开始创建权限模块相关类文件')
+        create_permission(package, permission=permission)
+        sys_print('--- 创建权限模块相关文件成功')
 
     file_name = make_targz()
 
@@ -431,7 +453,8 @@ def create_entity_foreign_key(class_name, package, foreigns_detail):
 
 
 # 创建repository-controller单值查询函数（外键根据主表查询）
-def create_repository_findBy_singleValue(class_name, package, columns, columnComment, columnKey, foreigns_detail):
+def create_repository_findBy_singleValue(class_name, package, columns, columnComment, columnKey, foreigns_detail,
+                                         **params):
     foreigns = getForeigns(foreigns_detail)
     foreignClassMap = getForeignsClassMap(foreigns_detail)
     # 根据column元素添加接口函数
@@ -480,7 +503,33 @@ import %s.service.%sService;
                 )
                 insert_java_file(class_name.title() + 'Controller', package + '.controller', '\n' + s + '\n',
                                  '//import可选\n')
-                s = '''
+                if params.get("permission") and len(params.get("permission")) >= 1:
+                    s = '''
+\t@Autowired
+\tprivate %sService %sService;
+\t@ApiOperation(value = "根据%s获取记录", notes = "根据%s获取记录", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
+\t@GetMapping("/findBy%s/{%s}")
+\t@CheckToken
+\tpublic Set<%s> findBy%s(@PathVariable %s %s){
+\t	return %sService.getById(%s).get%ss();
+\t}
+                                ''' % (
+                        foreignClassMap[key].title(),
+                        foreignClassMap[key],
+                        columnComment[key],
+                        columnComment[key],
+                        key.title(),
+                        key.lower(),
+                        class_name,
+                        key.title(),
+                        columns[key],
+                        key.lower(),
+                        foreignClassMap[key],
+                        key.lower(),
+                        class_name
+                    )
+                else:
+                    s = '''
 \t@Autowired
 \tprivate %sService %sService;
 \t@ApiOperation(value = "根据%s获取记录", notes = "根据%s获取记录", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -488,27 +537,27 @@ import %s.service.%sService;
 \tpublic Set<%s> findBy%s(@PathVariable %s %s){
 \t	return %sService.getById(%s).get%ss();
 \t}
-                                ''' % (
-                    foreignClassMap[key].title(),
-                    foreignClassMap[key],
-                    columnComment[key],
-                    columnComment[key],
-                    key.title(),
-                    key.lower(),
-                    class_name,
-                    key.title(),
-                    columns[key],
-                    key.lower(),
-                    foreignClassMap[key],
-                    key.lower(),
-                    class_name
-                )
+                                                    ''' % (
+                        foreignClassMap[key].title(),
+                        foreignClassMap[key],
+                        columnComment[key],
+                        columnComment[key],
+                        key.title(),
+                        key.lower(),
+                        class_name,
+                        key.title(),
+                        columns[key],
+                        key.lower(),
+                        foreignClassMap[key],
+                        key.lower(),
+                        class_name
+                    )
                 insert_java_file(class_name.title() + 'Controller', package + '.controller', '\n' + s + '\n',
                                  '    //按单项查找\n')
 
 
 # 创建repository-controller单值查询函数并排序
-def create_repository_findBy_singleValue_page(class_name, package, columns, columnComment, columnKey):
+def create_repository_findBy_singleValue_page(class_name, package, columns, columnComment, columnKey, **params):
     # 根据column元素添加接口函数
     for key in columns.keys():
         if columnKey[key] != '@Id':
@@ -536,7 +585,8 @@ def create_repository_findBy_singleValue_page(class_name, package, columns, colu
             insert_java_file(class_name.title() + 'Repository', package + '.repository', '\n' + s + '\n',
                              '    //按单项查找\n')
 
-            s = '''
+            if params.get("permission") and len(params.get("permission")) >= 1:
+                s = '''
 \t@ApiImplicitParams({
 \t			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
 \t					value = "您想获取的页数 (0..N)"),
@@ -548,37 +598,9 @@ def create_repository_findBy_singleValue_page(class_name, package, columns, colu
 \t})
 \t@ApiOperation(value = "根据%s获取记录", notes = "根据%s获取记录", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
 \t@GetMapping("/findBy%s/{%s}")
+\t@CheckToken
 \tpublic List<%s> findBy%s(@PathVariable %s %s,@PageableDefault(page = 0,size=10,sort = {"id"},direction = Sort.Direction.ASC) Pageable pageable){
 \t	return %sRepository.findBy%s(%s,pageable);
-\t}
-                ''' % (
-                columnComment[key],
-                columnComment[key],
-                key.title(),
-                key.lower(),
-                class_name,
-                key.title(),
-                columns[key],
-                key.lower(),
-                class_name.lower(),
-                key.title().replace('_', ''),
-                key.lower()
-            )
-            if columns[key] == "String":
-                s = s + '''
-\t@ApiImplicitParams({
-\t			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-\t					value = "您想获取的页数 (0..N)"),
-\t			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-\t					value = "每页的记录数."),
-\t			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
-\t					value = "严格排序格式: property(,asc|desc). " +
-\t							"默认排序是asc. " )
-\t})
-\t@ApiOperation(value = "根据%s获取记录", notes = "根据%s获取记录", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
-\t@GetMapping("/findBy%sLike/{%s}")
-\tpublic List<%s> findBy%sLike(@PathVariable %s %s,@PageableDefault(page = 0,size=10,sort = {"id"},direction = Sort.Direction.ASC) Pageable pageable){
-\t	return %sRepository.findBy%sLike(%s,pageable);
 \t}
                     ''' % (
                     columnComment[key],
@@ -593,19 +615,117 @@ def create_repository_findBy_singleValue_page(class_name, package, columns, colu
                     key.title().replace('_', ''),
                     key.lower()
                 )
+                if columns[key] == "String":
+                    s = s + '''
+\t@ApiImplicitParams({
+\t			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+\t					value = "您想获取的页数 (0..N)"),
+\t			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+\t					value = "每页的记录数."),
+\t			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+\t					value = "严格排序格式: property(,asc|desc). " +
+\t							"默认排序是asc. " )
+\t})
+\t@ApiOperation(value = "根据%s获取记录", notes = "根据%s获取记录", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
+\t@GetMapping("/findBy%sLike/{%s}")
+\t@CheckToken
+\tpublic List<%s> findBy%sLike(@PathVariable %s %s,@PageableDefault(page = 0,size=10,sort = {"id"},direction = Sort.Direction.ASC) Pageable pageable){
+\t	return %sRepository.findBy%sLike(%s,pageable);
+\t}
+                        ''' % (
+                        columnComment[key],
+                        columnComment[key],
+                        key.title(),
+                        key.lower(),
+                        class_name,
+                        key.title(),
+                        columns[key],
+                        key.lower(),
+                        class_name.lower(),
+                        key.title().replace('_', ''),
+                        key.lower()
+                    )
+            else:
+                s = '''
+\t@ApiImplicitParams({
+\t			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+\t					value = "您想获取的页数 (0..N)"),
+\t			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+\t					value = "每页的记录数."),
+\t			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+\t					value = "严格排序格式: property(,asc|desc). " +
+\t							"默认排序是asc. " )
+\t})
+\t@ApiOperation(value = "根据%s获取记录", notes = "根据%s获取记录", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
+\t@GetMapping("/findBy%s/{%s}")
+\tpublic List<%s> findBy%s(@PathVariable %s %s,@PageableDefault(page = 0,size=10,sort = {"id"},direction = Sort.Direction.ASC) Pageable pageable){
+\t	return %sRepository.findBy%s(%s,pageable);
+\t}
+                                    ''' % (
+                    columnComment[key],
+                    columnComment[key],
+                    key.title(),
+                    key.lower(),
+                    class_name,
+                    key.title(),
+                    columns[key],
+                    key.lower(),
+                    class_name.lower(),
+                    key.title().replace('_', ''),
+                    key.lower()
+                )
+                if columns[key] == "String":
+                    s = s + '''
+\t@ApiImplicitParams({
+\t			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+\t					value = "您想获取的页数 (0..N)"),
+\t			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+\t					value = "每页的记录数."),
+\t			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+\t					value = "严格排序格式: property(,asc|desc). " +
+\t							"默认排序是asc. " )
+\t})
+\t@ApiOperation(value = "根据%s获取记录", notes = "根据%s获取记录", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
+\t@GetMapping("/findBy%sLike/{%s}")
+\tpublic List<%s> findBy%sLike(@PathVariable %s %s,@PageableDefault(page = 0,size=10,sort = {"id"},direction = Sort.Direction.ASC) Pageable pageable){
+\t	return %sRepository.findBy%sLike(%s,pageable);
+\t}
+                                        ''' % (
+                        columnComment[key],
+                        columnComment[key],
+                        key.title(),
+                        key.lower(),
+                        class_name,
+                        key.title(),
+                        columns[key],
+                        key.lower(),
+                        class_name.lower(),
+                        key.title().replace('_', ''),
+                        key.lower()
+                    )
+
             insert_java_file(class_name.title() + 'Controller', package + '.controller', '\n' + s + '\n',
                              '    //按单项查找\n')
+            if params.get("permission") and len(params.get("permission")) >= 1:
+                if columns[key] == "String":
+                    params.get("mysql").insertFindItem(class_name.title(),
+                                                       columnComment[key],
+                                                       key.title(), True)
+                else:
+                    params.get("mysql").insertFindItem(class_name.title(),
+                                                       columnComment[key],
+                                                       key.title(), False)
 
 
 # 创建Repository
-def create_repository(class_name, package, id, columns, date, author, version, db_type):
+def create_repository(class_name, package, id, columns, date, author, version, db_type, **params):
     c = {'repository_package': package + '.repository',
          'package': package,
          'class_name': class_name,
          'entity_package': package + '.entity.' + class_name,
          'date': date,
          'id': id.lower(),
-         'id_type': columns[id], 'author': author, 'version': version}
+         'id_type': columns[id], 'author': author, 'version': version, 'params': params}
     if db_type == 'mysql_jpa':
         s = render_template('repository_jpa_templates.html', **c)
     elif db_type == 'mongodb':
@@ -640,11 +760,11 @@ def create_service(class_name, package, id, columns, date, author, version):
 
 
 # 创建controller
-def create_controller(class_name, package, tableComment, id, columns, date, author, version, db_type):
+def create_controller(class_name, package, tableComment, id, columns, date, author, version, db_type, **params):
     c = {'package': package,
          'table_comment': tableComment,
          'class_name': class_name, 'id_title': id.lower().title(), 'id': id.lower(), 'id_type': columns[id],
-         'class_name_lower': class_name.lower(), 'date': date, 'author': author, 'version': version}
+         'class_name_lower': class_name.lower(), 'date': date, 'author': author, 'version': version, 'params': params}
     s = ''
     if db_type == 'mysql_jpa':
         s = render_template('controller_jpa_templates.html', **c)
@@ -682,6 +802,45 @@ def create_files(package, **params):
     create_java_file('IFileService', package + '.service', s)
     s = render_template('files_FileServiceImpl_templates.html', **c)
     create_java_file('FileServiceImpl', package + '.service.impl', s)
+
+
+# 创建权限相关类
+def create_permission(package, **params):
+    # 写annotation里的两个类
+    c = {'package': package, 'params': params}
+    s = render_template('permission_annotation_checkout_template.html', **c)
+    create_java_file('CheckToken', package + '.annotation', s)
+    s = render_template('permission_annotation_login_template.html', **c)
+    create_java_file('LoginToken', package + '.annotation', s)
+    # 写configuration里的配置类
+    c = {'package': package}
+    s = render_template('permission_configuration_template.html', **c)
+    create_java_file('InterceptorConfiguration', package + '.configuration', s)
+    # 写interceptor里的权限拦截类
+    c = {'package': package}
+    s = render_template('permission_interceptor_template.html', **c)
+    create_java_file('AuthenticationInterceptor', package + '.interceptor', s)
+    # 写service类
+    s = render_template('permission_service_vertify_template.html', **c)
+    create_java_file('VertifyService', package + '.service', s)
+    s = render_template('permission_serviceImpl_vertify_template.html', **c)
+    create_java_file('VertifyServiceImpl', package + '.service.impl', s)
+    # 写工具util类
+    s = render_template('permission_util_jwt_template.html', **c)
+    create_java_file('JwtUtil', package + '.util', s)
+    # 写controller类
+    s = render_template('permission_controller_vertify_template.html', **c)
+    create_java_file('VertifyController', package + '.controller', s)
+    # 修改Us_permissionRepository类
+    s = '''
+\t@Query(value = "SELECT p FROM Us_Permission p WHERE p.id in (:permissionids)")
+\tList<Us_Permission> findInIds(@Param("permissionids") List<Integer> ids);
+
+\t@Query(value = "SELECT p FROM Us_Permission p WHERE p.psc=:psc AND p.psa=:psa")
+\tList<Us_Permission> findInIdBySM(@Param("psc") String psc,@Param("psa") String psa);
+    '''
+    insert_java_file('Us_PermissionRepository', package + '.repository', '\n' + s + '\n',
+                     '    //按单项查找\n')
 
 
 # ********************************************************************* 具体操作函数

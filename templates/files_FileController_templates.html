@@ -15,7 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+{% if params.permission %}
+import com.sdgm.biggeodata.annotation.CheckToken;
+{% endif %}
 
 import java.io.*;
 import java.net.URLEncoder;
@@ -39,6 +41,9 @@ public class FileController {
      */
     @ApiOperation(value = "获得全部文件列表", notes = "获得全部记录", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
     @GetMapping("/list")
+	{% if params.permission %}
+	@CheckToken
+	{% endif %}
     public List<FileDocument> list(int pageIndex, int pageSize){
         return fileService.listFilesByPage(pageIndex,pageSize);
     }
@@ -50,6 +55,9 @@ public class FileController {
      */
     @ApiOperation(value = "预览一个文件", notes = "获得一个记录", httpMethod = "GET")
     @GetMapping("/view/{id}")
+    {% if params.permission %}
+	@CheckToken
+	{% endif %}
     public ResponseEntity<Object> serveFileOnline(@PathVariable String id) {
         Optional<FileDocument> file = fileService.getById(id);
         if (file.isPresent()) {
@@ -72,6 +80,9 @@ public class FileController {
      */
     @ApiOperation(value = "根据id下载文件", notes = "获得一个记录", httpMethod = "GET")
     @GetMapping("/{id}")
+	{% if params.permission %}
+	@CheckToken
+	{% endif %}
     public ResponseEntity<Object> downloadFileById(@PathVariable String id) throws UnsupportedEncodingException {
         Optional<FileDocument> file = fileService.getById(id);
         if(file.isPresent()){
@@ -95,6 +106,9 @@ public class FileController {
      */
     @ApiOperation(value = "上传文件", notes = "上传多个文件", httpMethod = "POST", produces = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping("/upload")
+	{% if params.permission %}
+	@CheckToken
+	{% endif %}
     public List<ResponseModel> formUpload(@RequestParam("file") MultipartFile file[]){
         List<ResponseModel> responseModels=new ArrayList<>();
         for(int i=0;i<file.length;i++){
@@ -130,6 +144,9 @@ public class FileController {
      */
     @ApiOperation(value = "删除一个文件", notes = "删除一个记录", httpMethod = "DELETE", produces = MediaType.APPLICATION_JSON_VALUE)
     @DeleteMapping("/{id}")
+	{% if params.permission %}
+	@CheckToken
+	{% endif %}
     public ResponseModel deleteFile(@PathVariable String id){
         ResponseModel model = ResponseModel.getInstance();
         if(!StrUtil.isEmpty(id)){

@@ -1,0 +1,384 @@
+package {{ package }}.service.impl;
+
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+import {{ package }}.entity.Us_Manager;
+import {{ package }}.entity.Us_Permission;
+import {{ package }}.entity.Us_Permissionapi;
+import {{ package }}.entity.Us_Role;
+import {{ package }}.repository.Us_ManagerRepository;
+import {{ package }}.repository.Us_PermissionRepository;
+import {{ package }}.repository.Us_PermissionapiRepository;
+import {{ package }}.repository.Us_RoleRepository;
+import {{ package }}.service.Us_ManagerService;
+import {{ package }}.service.Us_PermissionService;
+import {{ package }}.service.Us_RoleService;
+import {{ package }}.service.VertifyService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Service
+public class VertifyServiceImpl implements VertifyService {
+
+    @Autowired
+    private Us_ManagerService us_managerService;
+
+    @Autowired
+    private Us_RoleService us_roleService;
+
+    @Autowired
+    private Us_PermissionRepository us_permissionRepository;
+
+    @Autowired
+    private Us_PermissionapiRepository us_permissionapiRepository;
+
+    @Autowired
+    private Us_ManagerRepository us_managerRepository;
+
+    @Autowired
+    private Us_RoleRepository us_roleRepository;
+
+    @Autowired
+    private Us_PermissionService us_permissionService;
+
+
+    @Override
+    public JSONArray getUserMenus(Integer userid) {
+        // 通过人员id得到权限id的集合
+        Us_Manager user = us_managerService.getById(userid);
+        Integer roleid = user.getRoleid();
+//        如果用户为超级管理员，返回空
+        if (roleid == 0) {
+            return null;
+        }
+        Us_Role us_role = us_roleService.getById(roleid);
+        String permissionIds = us_role.getPsids();
+
+        // 得到用户所有的权限
+        List<Integer> pma = new ArrayList<>();
+        for (String ps : permissionIds.split(",")) {
+            pma.add(Integer.parseInt(ps));
+        }
+        List<Us_Permission> us_permissions = us_permissionRepository.findInIds(pma);
+
+
+        // 得到组织好的有层次的权限结构
+        Map<Us_Permission, List<Us_Permission>> tree = new HashMap<>();
+        for (Us_Permission p : us_permissions) {
+            if (p.getPslevel() == 1) {
+                List<Us_Permission> child = new ArrayList<>();
+                us_permissions.stream()
+                        .filter(us_permission -> us_permission.getPspid() == p.getId())
+                        .collect(Collectors.toList())
+                        .forEach(child::add);
+                tree.put(p, child);
+            }
+        }
+
+        List<Us_Permissionapi> us_permissionapis = us_permissionapiRepository.findAll();
+        // 把权限结合api表中内容填写进json
+        JSONArray jsonArray = new JSONArray();
+        for (Us_Permission k : tree.keySet()) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", k.getId());
+            jsonObject.put("authName", k.getPsname());
+
+//            Us_Permissionapi us_permissionapi= us_permissionapiRepository.
+//                    findByPsid(k.getId(),PageRequest.of(0,1,Sort.Direction.DESC,"id")).get(0);
+
+            Us_Permissionapi us_permissionapi = getUs_permissionapi(us_permissionapis, k);
+            jsonObject.put("path", us_permissionapi.getPsapipath());
+            jsonObject.put("order", us_permissionapi.getPsapiorder());
+            JSONArray ja = new JSONArray();
+            for (Us_Permission kk : tree.get(k)) {
+                JSONObject jo = new JSONObject();
+                jo.put("id", kk.getId());
+                jo.put("authName", kk.getPsname());
+
+//                Us_Permissionapi usp= us_permissionapiRepository.
+//                        findByPsid(kk.getId(),PageRequest.of(0,1,Sort.Direction.DESC,"id")).get(0);
+                Us_Permissionapi usp = getUs_permissionapi(us_permissionapis, kk);
+                jo.put("path", usp.getPsapipath());
+                jo.put("order", usp.getPsapiorder());
+                jo.put("children", new JSONArray());
+                ja.put(jo);
+            }
+            sortJsonArray(ja);
+            jsonObject.put("children", ja);
+            jsonArray.add(jsonObject);
+
+        }
+
+        sortJsonArray(jsonArray);
+
+        return jsonArray;
+    }
+
+    private void sortJsonArray(JSONArray jsonArray) {
+        for (int i = 0; i < jsonArray.size() - 1; i++) {
+            if (jsonArray.getJSONObject(i).get("order") == null) {
+                jsonArray.getJSONObject(i).put("order", 10000);
+            }
+            for (int j = i + 1; j < jsonArray.size(); j++) {
+                if (jsonArray.getJSONObject(j).get("order") == null) {
+                    jsonArray.getJSONObject(j).put("order", 10000);
+                }
+                if ((Integer) jsonArray.getJSONObject(i).get("order") > (Integer) jsonArray.getJSONObject(j).get("order")) {
+                    JSONObject tmp = jsonArray.getJSONObject(i);
+                    jsonArray.set(i, jsonArray.getJSONObject(j));
+                    jsonArray.set(j, tmp);
+                }
+            }
+        }
+    }
+
+    private Us_Permissionapi getUs_permissionapi(List<Us_Permissionapi> us_permissionapis, Us_Permission k) {
+        List<Us_Permissionapi> upis1 = us_permissionapis
+                .stream()
+                .filter(upi -> upi.getPsid() == k.getId())
+                .collect(Collectors.toList());
+        Us_Permissionapi usp = new Us_Permissionapi();
+        if (upis1.size() >= 1) {
+            usp = upis1.get(0);
+        }
+        return usp;
+    }
+
+    @Override
+    public JSONObject getUsers(Integer pagenum, Integer pagesize) {
+        Page<Us_Manager> us_managers = us_managerRepository.
+                findAll(PageRequest.of(pagenum - 1, pagesize, Sort.Direction.DESC, "id"));
+
+        JSONObject json = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        List<Us_Role> us_roles = us_roleRepository.findAll();
+        us_managers.stream().forEach(u -> {
+            JSONObject jsonObject = new JSONObject();
+            List<Us_Role> usRoles = us_roles.stream()
+                    .filter(us_role -> us_role.getId() == u.getRoleid())
+                    .collect(Collectors.toList());
+            if (usRoles.size() > 0) {
+                Us_Role us_role = usRoles.get(0);
+                jsonObject.put("id", u.getId());
+                jsonObject.put("role_name", us_role.getRolename());
+            } else {
+                jsonObject.put("id", u.getId());
+                jsonObject.put("role_name", null);
+            }
+
+            jsonObject.put("username", u.getMgname());
+            jsonObject.put("mobile", u.getMgmobile());
+            jsonObject.put("type", 1);
+            jsonObject.put("email", u.getMgmail());
+            jsonObject.put("create_time", u.getMgtime());
+            if (u.getMgState() == 1) {
+                jsonObject.put("mg_state", true);
+            } else {
+                jsonObject.put("mg_state", false);
+            }
+
+            jsonArray.put(jsonObject);
+        });
+        json.put("totalpage", Math.round(us_managerRepository.count() / pagesize));
+        json.put("pagenum", pagenum);
+        json.put("users", jsonArray);
+        return json;
+    }
+
+    @Override
+    public JSONObject changeUserState(Integer userid, Boolean type) throws Exception {
+        Us_Manager u = us_managerService.getById(userid);
+        List<Us_Role> us_roles = us_roleService.listAll();
+        if (type) {
+            u.setMgState(1);
+        } else {
+            u.setMgState(0);
+        }
+        Us_Manager user = us_managerService.update(u);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", user.getId());
+        List<Us_Role> usRoles = us_roles.stream().filter(r -> r.getId() == user.getRoleid()).collect(Collectors.toList());
+        if (usRoles.size() > 0) {
+            Us_Role us_role = usRoles.get(0);
+            jsonObject.put("rid", us_role.getId());
+        }
+        jsonObject.put("username", user.getMgname());
+        jsonObject.put("mobile", user.getMgmobile());
+        jsonObject.put("email", user.getMgmail());
+        jsonObject.put("mg_state", user.getMgState());
+        return jsonObject;
+    }
+
+    @Override
+    public JSONArray getRoles() {
+        List<Us_Role> us_roles = us_roleService.listAll();
+        List<Us_Permission> us_permissions = us_permissionService.listAll();
+        JSONArray jsonArray = new JSONArray();
+        us_roles.stream().forEach(role -> {
+            String psids = role.getPsids();
+            JSONArray children = getPermissionChildren(psids, us_permissions,false);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", role.getId());
+            jsonObject.put("roleName", role.getRolename());
+            jsonObject.put("roleDesc", role.getRoledesc());
+            jsonObject.put("children", children);
+            jsonArray.put(jsonObject);
+        });
+        return jsonArray;
+    }
+
+    @Override
+    public JSONArray getPermissions(String type) {
+        if (type.equals("tree")) {
+            List<Us_Permission> us_permissions = us_permissionService.listAll();
+            StringBuilder sb = new StringBuilder();
+            us_permissions.stream().forEach(us_permission -> sb.append(us_permission.getId() + ","));
+            String pids = sb.toString();
+            pids.substring(0, pids.length() - 1);
+
+            return getPermissionChildren(pids, us_permissions, true);
+        } else if (type.equals("list")) {
+            List<Us_Permission> us_permissions = us_permissionService.listAll();
+            JSONArray jsonArray = new JSONArray();
+            us_permissions.stream().forEach(us_permission -> {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", us_permission.getId());
+                jsonObject.put("authName", us_permission.getPsname());
+                jsonObject.put("level", us_permission.getPslevel().toString());
+                jsonObject.put("pid", us_permission.getPspid());
+                jsonObject.put("path", null);
+                jsonArray.put(jsonObject);
+            });
+
+            return jsonArray;
+        } else {
+            return null;
+        }
+
+    }
+
+    @Override
+    public JSONArray removePermissionByRoleid(Integer roleid, Integer permissionid) throws Exception {
+        Us_Role us_role = us_roleService.getById(roleid);
+        List<String> deleteIds = new ArrayList<>();
+        deleteChild(permissionid, deleteIds);
+        String psids = us_role.getPsids();
+        List<String> pids = new LinkedList<>(Arrays.asList(psids.split(",")));
+        pids.removeAll(deleteIds);
+        final StringBuilder[] sb = {new StringBuilder()};
+        pids.stream().forEach(pid -> {
+            sb[0] = sb[0].append(pid + ",");
+        });
+
+        if (sb[0].length() <= 0) {
+            us_roleService.update(us_role);
+            us_role.setPsids("");
+            return new JSONArray();
+        } else {
+            String s = sb[0].toString().substring(0, sb[0].toString().length() - 1);
+            us_role.setPsids(s);
+            us_roleService.update(us_role);
+
+            //返回角色对应的权限树
+            List<Us_Permission> us_permissions = us_permissionService.listAll();
+            JSONArray children = getPermissionChildren(s, us_permissions,false);
+            return children;
+        }
+    }
+
+    private void deleteChild(Integer permissionid, List<String> deleteIds) {
+        deleteIds.add(permissionid.toString());
+        List<Us_Permission> us_permissions = us_permissionRepository
+                .findByPspid(permissionid, PageRequest.of(0, 1000, Sort.Direction.DESC, "id"));
+        if (us_permissions.size() > 0) {
+            us_permissions.stream().forEach(us_permission -> {
+                deleteChild(us_permission.getId(), deleteIds);
+            });
+        }
+    }
+
+    //通过权限序列得到权限Jsonarray
+    private JSONArray getPermissionChildren(String psids, List<Us_Permission> us_permissions, boolean isAll) {
+        List<String> psid = Arrays.asList(psids.split(","));
+        JSONArray jsonArray = new JSONArray();
+        List<Us_Permission> us_permissions_filter=new ArrayList<>();
+        if (isAll) {
+            us_permissions_filter = us_permissions
+                    .stream()
+                    //搜索在数组中的包含的父节点为0的权限，对这些节点进行处理
+                    .filter(us_permission -> us_permission.getPspid() == 0)
+                    .collect(Collectors.toList());
+        } else {
+            us_permissions_filter = us_permissions
+                    .stream()
+                    //搜索在数组中的包含的父节点为0的权限，对这些节点进行处理
+                    .filter(us_permission -> us_permission.getPspid() == 0 && psid.contains(us_permission.getId().toString()))
+                    .collect(Collectors.toList());
+        }
+
+        if (us_permissions_filter.size() > 0) {
+            us_permissions_filter.stream().forEach(us_permission -> {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", us_permission.getId());
+
+//                us_permissions.remove(us_permission);
+
+                jsonObject.put("authName", us_permission.getPsname());
+                jsonObject.put("path", null);
+                jsonObject.put("pid", us_permission.getPspid());
+                jsonObject.put("children", getChildren(us_permission.getId(), us_permissions, psid,isAll));
+                jsonArray.put(jsonObject);
+            });
+            return jsonArray;
+        } else {
+            return null;
+        }
+
+    }
+
+    //通过权限id,得到其子权限jsonarray
+    private JSONArray getChildren(Integer permissioinId, List<Us_Permission> us_permissions, List<String> psid,boolean isAll) {
+        JSONArray jsonArray = new JSONArray();
+        List<Us_Permission> us_permission_filter=new ArrayList<>();
+        if(isAll){
+            us_permission_filter = us_permissions.stream()
+                    .filter(us_permission -> us_permission.getPspid().equals(permissioinId))
+                    .collect(Collectors.toList());
+        }else{
+            us_permission_filter = us_permissions.stream()
+                    .filter(us_permission -> us_permission.getPspid().equals(permissioinId) && psid.contains(us_permission.getId().toString()))
+                    .collect(Collectors.toList());
+        }
+
+        if (us_permission_filter.size() > 0) {
+            us_permission_filter.stream().forEach(us_permission -> {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", us_permission.getId());
+
+//                us_permissions.remove(us_permission);
+
+                jsonObject.put("authName", us_permission.getPsname());
+                jsonObject.put("path", null);
+                jsonObject.put("pid", us_permission.getPspid());
+                JSONArray jsonArray1 = new JSONArray();
+                jsonArray1 = getChildren(us_permission.getId(), us_permissions, psid,isAll);
+                if (jsonArray1 != null) {
+                    jsonObject.put("children", jsonArray1);
+                }
+                jsonArray.put(jsonObject);
+            });
+            return jsonArray;
+        } else {
+            return null;
+        }
+
+    }
+
+
+}

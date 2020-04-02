@@ -1,0 +1,277 @@
+package {{ package }}.controller;
+
+import cn.hutool.core.date.DateTime;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+import {{ package }}.annotation.CheckToken;
+import {{ package }}.annotation.LoginToken;
+import {{ package }}.entity.Us_Manager;
+import {{ package }}.entity.Us_Role;
+import {{ package }}.repository.Us_ManagerRepository;
+import {{ package }}.service.Us_ManagerService;
+import {{ package }}.service.Us_PermissionService;
+import {{ package }}.service.Us_RoleService;
+import {{ package }}.service.VertifyService;
+import {{ package }}.util.JwtUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.MediaType;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/vertify")
+@Api(description = "权限管理模块")
+public class VertifyController {
+    @Autowired
+    private Us_ManagerService userService;
+
+    @Autowired
+    private Us_RoleService us_roleService;
+
+    @Autowired
+    private Us_ManagerRepository us_managerRepository;
+
+    @Autowired
+    private Us_PermissionService us_permissionService;
+
+    @Autowired
+    private VertifyService vertifyService;
+
+    @Autowired
+    private Us_ManagerService us_managerService;
+
+    Logger logger = LoggerFactory.getLogger(getClass());
+
+    /**
+     * 登录
+     */
+    @ApiOperation(value = "登录接口", notes = "登录接口，返回token，加入header-Authorization,接收username和password两个参数", httpMethod = "POST", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/login")
+    @LoginToken
+    public Object login(@RequestBody Map<String, Object> params) {
+        Us_Manager user = new Us_Manager();
+        user.setMgname(params.get("username").toString());
+        user.setMgpwd(params.get("password").toString());
+
+        JSONObject jsonObject = new JSONObject();
+        Us_Manager userForBase = us_managerRepository.
+                findByMgname(user.getMgname(), PageRequest.of(0, 1, Sort.Direction.DESC, "id"))
+                .get(0);
+        userForBase.setMgpwd(JwtUtil.getHash(user.getMgpwd(), "SHA"));
+        if (userForBase == null) {
+            jsonObject.put("message", "登录失败,用户不存在");
+            return jsonObject;
+        } else {
+            if (!userForBase.getMgpwd().equals(JwtUtil.getHash(user.getMgpwd(), "SHA"))) {
+                jsonObject.put("message", "登录失败,密码错误");
+                return jsonObject;
+            } else {
+                String token = JwtUtil.createJWT(6000000, userForBase);
+                jsonObject.put("token", token);
+                jsonObject.put("user", userForBase);
+                return jsonObject;
+            }
+        }
+    }
+
+
+    /**
+     * 查看个人信息
+     */
+    @CheckToken
+    @GetMapping("/getMessage")
+    public String getMessage() {
+        return "你已通过验证";
+    }
+
+    /**
+     * 获取根据人员获取侧边栏菜单
+     */
+    @ApiOperation(value = "得到功能菜单", notes = "得到功能菜单", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/getMenus/{userid}")
+    @CheckToken
+    public JSONArray getMenus(@PathVariable Integer userid) {
+        return vertifyService.getUserMenus(userid);
+    }
+
+
+    /**
+     * 得到所有用户
+     */
+    @ApiOperation(value = "得到所有用户", notes = "得到所有带角色信息的用户", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/users")
+    @CheckToken
+    public JSONObject getUsers(@Param("query") String query, @Param("pagenum") Integer pagenum, @Param("pagesize") Integer pagesize) {
+        return vertifyService.getUsers(pagenum, pagesize);
+    }
+
+    /**
+     * 更新用户的可用状态
+     */
+    @ApiOperation(value = "更新用户的可用状态", notes = "更新用户的可用状态", httpMethod = "PUT", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping("/users/{userid}/state/{type}")
+    @CheckToken
+    public JSONObject changeUserState(@PathVariable("userid") Integer userid, @PathVariable("type") Boolean type) throws Exception {
+        return vertifyService.changeUserState(userid, type);
+    }
+
+    /**
+     * 得到所有角色
+     */
+    @ApiOperation(value = "得到所有角色", notes = "得到所有带有权限信息的角色", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/roles")
+    @CheckToken
+    public JSONArray getRoles() {
+        return vertifyService.getRoles();
+    }
+
+    /**
+     * 修改用户角色
+     */
+    @ApiOperation(value = "修改用户角色", notes = "修改用户角色，传入rid参数，代表角色id", httpMethod = "PUT", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping("/users/{userid}/role")
+    @CheckToken
+    public JSONObject saveRoleInfo(@PathVariable("userid") Integer userid, @RequestBody Map<String, Object> params) throws Exception {
+        Us_Manager user = userService.getById(userid);
+        Integer roleid = (Integer) params.get("rid");
+        user.setRoleid(roleid);
+        userService.update(user);
+        JSONObject jsonObject = new JSONObject();
+        return jsonObject.put("msg", "success");
+    }
+
+    /**
+     * 创建用户
+     */
+    @ApiOperation(value = "创建用户", notes = "创建用户信息", httpMethod = "POST", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/users")
+    @CheckToken
+    public @ResponseBody
+    Us_Manager createUser(@Valid Us_Manager us_manager, BindingResult errors) throws Exception {
+
+        if (errors.hasErrors()) {
+            errors.getAllErrors().stream().forEach(error -> logger.info(error.getDefaultMessage()));
+        }
+        Date date = DateTime.now();
+        List<Us_Manager> us_managers = us_managerRepository.findByMgname(us_manager.getMgname(), PageRequest.of(0, 2, Sort.Direction.DESC, "id"));
+        //出现错误直接抛出结束进程
+        if (us_managers.size() > 0)
+            throw new RuntimeException();
+
+        us_manager.setRoleid(-1);
+        us_manager.setMgtime(date);
+        String pwd = JwtUtil.getHash(us_manager.getMgpwd(), "SHA"); //对密码进行sha加密
+        us_manager.setMgpwd(pwd);
+        us_manager.setMgState(0);
+        return us_managerService.save(us_manager);
+
+    }
+
+    /**
+     * 修改用户信息
+     */
+    @ApiOperation(value = "修改用户信息", notes = "修改用户信息,接收mgmail和mgmobile两个参数", httpMethod = "PUT", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping("/users/{id:\\d+}")
+    @CheckToken
+    public @ResponseBody
+    Us_Manager updateUser(@RequestBody Map<String, Object> params, @PathVariable Integer id, BindingResult errors) throws Exception {
+
+        if (errors.hasErrors()) {
+            errors.getAllErrors().stream().forEach(error -> {
+                logger.info(error.getDefaultMessage());
+            });
+        }
+        String mgmail = params.get("mgmail").toString();
+        String mgmobile = params.get("mgmobile").toString();
+
+        Us_Manager us_manager1 = us_managerService.getById(id);
+        us_manager1.setMgmail(mgmail);
+        us_manager1.setMgmobile(mgmobile);
+        return us_managerService.update(us_manager1);
+    }
+
+    /**
+     * 修改角色信息
+     */
+    @ApiOperation(value = "修改角色信息", notes = "修改角色信息", httpMethod = "PUT", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping("/role/{id:\\d+}")
+    @CheckToken
+    public @ResponseBody
+    Us_Role updateRole(@Valid Us_Role us_role, @PathVariable Integer id, BindingResult errors) throws Exception {
+
+        if (errors.hasErrors()) {
+            errors.getAllErrors().stream().forEach(error -> {
+                logger.info(error.getDefaultMessage());
+            });
+        }
+
+        us_role.setId(id);
+        us_role.setPsids("");
+        return us_roleService.update(us_role);
+    }
+
+    /**
+     * 创建角色
+     */
+    @ApiOperation(value = "创建角色", notes = "创建角色", httpMethod = "POST", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/role")
+    @CheckToken
+    public @ResponseBody
+    Us_Role createRole(@Valid Us_Role us_role, BindingResult errors) throws Exception {
+
+        if (errors.hasErrors()) {
+            errors.getAllErrors().stream().forEach(error -> logger.info(error.getDefaultMessage()));
+        }
+        us_role.setPsids("");
+        return us_roleService.save(us_role);
+    }
+
+    /**
+     * 得到全部权限信息
+     */
+    @ApiOperation(value = "得到全部权限信息", notes = "根据type（tree，list）参数得到全部权限信息", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/permission/{type}")
+    @CheckToken
+    public JSONArray getPermissions(@PathVariable("type") String type) {
+        return vertifyService.getPermissions(type);
+    }
+
+    /**
+     * 为角色赋权限
+     */
+    @ApiOperation(value = "为角色赋权限", notes = "为角色赋权限，rids为用逗号分隔的权限id", httpMethod = "POST", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("role/{roleid}/permissions")
+    @CheckToken
+    public void allotPermission(@PathVariable("roleid") Integer roleid, @Param("rids") String rids) throws Exception {
+        Us_Role us_role = us_roleService.getById(roleid);
+        us_role.setPsids(rids);
+        us_roleService.update(us_role);
+    }
+
+    /**
+     * 删除角色的权限
+     */
+    @ApiOperation(value = "删除角色的权限", notes = "删除角色的权限", httpMethod = "DELETE", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping("role/{roleid}/permission/{permissionid}")
+    @CheckToken
+    public JSONArray removePermissionByRoleid(@PathVariable("roleid") Integer roleid,
+                                         @PathVariable("permissionid") Integer permissionid) throws Exception {
+        return vertifyService.removePermissionByRoleid(roleid, permissionid);
+    }
+}
