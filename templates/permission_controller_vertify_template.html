@@ -73,7 +73,6 @@ public class VertifyController {
         Us_Manager userForBase = us_managerRepository.
                 findByMgname(user.getMgname(), PageRequest.of(0, 1, Sort.Direction.DESC, "id"))
                 .get(0);
-        userForBase.setMgpwd(JwtUtil.getHash(user.getMgpwd(), "SHA"));
         if (userForBase == null) {
             jsonObject.put("message", "登录失败,用户不存在");
             return jsonObject;
@@ -82,10 +81,15 @@ public class VertifyController {
                 jsonObject.put("message", "登录失败,密码错误");
                 return jsonObject;
             } else {
-                String token = JwtUtil.createJWT(6000000, userForBase);
-                jsonObject.put("token", token);
-                jsonObject.put("user", userForBase);
-                return jsonObject;
+                if(userForBase.getMgState()==1){
+                    String token = JwtUtil.createJWT(6000000, userForBase);
+                    jsonObject.put("token", token);
+                    jsonObject.put("user", userForBase);
+                    return jsonObject;
+                }else{
+                    jsonObject.put("message", "用户当前状态不能登录");
+                    return jsonObject;
+                }
             }
         }
     }
